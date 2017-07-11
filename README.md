@@ -4,7 +4,7 @@ Counts the number of views for specified videos from YouTube or Facebook.
 
 ## Usage
 
-First, edit counter.py to have the URLs you care about. Then:
+First, edit counter.py to have the URLs you care about. Then, from a Terminal window:
 
 ```bash
 [sudo] pip install virtualenv
