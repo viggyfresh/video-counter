@@ -7,8 +7,9 @@ import re
 import requests
 
 YOUTUBE_DATA_URL = "https://www.googleapis.com/youtube/v3/videos"
-YOUTUBE_API_KEY = "" # Rohith: replace with API key
+YOUTUBE_API_KEY = ""  # Rohith: replace with API key
 
+# yapf: disable
 URLS = OrderedDict([
     ("Jiya Jale", "https://youtu.be/pZy8115sNXM"),
     ("Yeh Jo Des Hai Tera", "https://youtu.be/0GWWcwpGosw"),
@@ -119,6 +120,7 @@ URLS = OrderedDict([
     ("Shankar Mahadevan Promo (Sharayu)",
      "https://www.facebook.com/Mahalenator/videos/1278686858873365/")
 ])
+# yapf: disable
 
 
 def is_youtube_video(url):
@@ -146,12 +148,16 @@ def facebook_count(url):
     """Counts the number of views on a Facebook video."""
     page = requests.get(url)
     regex = re.compile(r"[\d|,]+ [v|V]iews")
-    return regex.findall(page.content)[0].replace(" Views", "")
+    return (
+        regex.findall(page.content.decode("utf-8"))[0]
+            .replace(" Views", "")
+            .replace(" views", "")
+    )
 
 
 def dump_to_csv(counts):
     """Dumps a list of count objects to a CSV file."""
-    with open("counts-%s.csv" % datetime.datetime.now().strftime("%Y-%m-%d"), "wb") as csvfile:
+    with open("counts-%s.csv" % datetime.datetime.now().strftime("%Y-%m-%d"), "w") as csvfile:
         fieldnames = ["Video", "Link", "Count"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -162,14 +168,15 @@ def dump_to_csv(counts):
 def main():
     """Main video counting function."""
     counts = []
-    for name, url in URLS.iteritems():
+    for name, url in URLS.items():
         if is_youtube_video(url):
-            count = youtube_count(url)
+            count = "Unknown"
+            # count = youtube_count(url)
         elif is_facebook_video(url):
             count = facebook_count(url)
         else:
             raise ValueError("Invalid URL provided.")
-        print name, count
+        print(name, count)
         counts.append({"Video": name, "Link": url, "Count": count})
     dump_to_csv(counts)
 
