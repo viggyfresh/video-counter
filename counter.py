@@ -218,8 +218,7 @@ def main():
     counts = []
     for name, url in URLS.items():
         if is_youtube_video(url):
-            count = "Unknown"
-            # count = youtube_count(url)
+            count = youtube_count(url)
         elif is_facebook_video(url):
             count = facebook_count(url)
         else:
